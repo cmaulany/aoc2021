@@ -4,43 +4,38 @@ const path = require('path');
 const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
 const data = input.split('\n').map(n => n.trim());
 
-const first = data[0];
+function getRating(data, keepCondition) {
+    const rating = data[0].split('').reduce(
+        (data, _, index) => {
+            if (data.length === 1) {
+                return data;
+            }
 
-const bOxygenGeneratorRating = first.split('').reduce(
-    (data, _, index) => {
-        if (data.length === 1) {
-            return data;
-        }
+            const zeroCount = data.filter(number => number[index] === '0').length;
+            const oneCount = data.length - zeroCount;
 
-        const zeroCount = data.filter(number => number[index] === '0').length;
-        const bitToKeep = zeroCount > (data.length / 2.0) ? '0' : '1';
-        
-        return data.filter(number => number[index] === bitToKeep);
-    },
-    data
-)[0];
+            return data.filter(number => keepCondition(zeroCount, oneCount, number[index]));
+        },
+        data
+    )[0];
 
-const bCo2ScrubberRating = first.split('').reduce(
-    (data, _, index) => {
-        if (data.length === 1) {
-            return data;
-        }
+    return parseInt(rating, 2);
+}
 
-        const zeroCount = data.filter(number => number[index] === '0').length;
-        const bitToKeep = zeroCount > (data.length / 2.0) ? '1' : '0';
-        
-        return data.filter(number => number[index] === bitToKeep);
-    },
-    data
-)[0];
+const getOxygenGeneratorRating = (data) => getRating(
+    data,
+    (zeroCount, oneCount, bit) =>
+        (zeroCount > oneCount ? '0' : '1') === bit
+);
 
-console.log(parseInt(bOxygenGeneratorRating, 2));
-console.log(parseInt(bCo2ScrubberRating, 2));
+const getCo2ScrubberRating = (data) => getRating(
+    data,
+    (zeroCount, oneCount, bit) =>
+        (zeroCount > oneCount ? '1' : '0') === bit
+);
 
+const oxygenGeneratorRating = getOxygenGeneratorRating(data);
+const co2ScrubberRating = getCo2ScrubberRating(data);
 
-const ocygenGeneratorRating = parseInt(bOxygenGeneratorRating, 2);
-const co2ScrubberRating = parseInt(bCo2ScrubberRating, 2);
-
-const answer = ocygenGeneratorRating * co2ScrubberRating;
-
+const answer = oxygenGeneratorRating * co2ScrubberRating;
 console.log(`Answer: ${answer}`);
