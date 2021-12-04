@@ -40,8 +40,8 @@ const sumBoard = (board) => board.reduce(
 );
 
 let currentBoards = boards;
-for (let i = 0; i < numbers.length; i++) {
-    const number = numbers[i];
+
+for (const number of numbers) {
 
     currentBoards = currentBoards.map(board => markNumber(board, number));
     const wonBoard = currentBoards.find(boardHasWon);
