@@ -18,9 +18,6 @@ const boards = rawBoards.map(
         )
 );
 
-console.log(boards);
-return;
-
 const markNumber = (board, number) => board.map(
     row => row.map(
         n => n === number ? 'X' : n
