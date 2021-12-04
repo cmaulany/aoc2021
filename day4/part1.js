@@ -14,7 +14,7 @@ const boards = rawBoards.map(
             line => line
                 .trim()
                 .split(/\ +/)
-                .map(n => Number(n))
+                .map(Number)
         )
 );
 
