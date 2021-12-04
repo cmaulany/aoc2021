@@ -64,15 +64,11 @@ const sumBoard = (board) => board.reduce(
 let currentBoards = boards;
 for (let i = 0; i < numbers.length; i++) {
     const number = numbers[i];
-    // console.log("N: " + number);
-    // console.log(JSON.stringify(currentBoards, null, 4));
+
     currentBoards = currentBoards.map(board => markNumber(board, number));
-
     const victoriousBoard = currentBoards.find(boardHasWon);
-    if (victoriousBoard) {
-        console.log("Won!", number);
-        console.log(JSON.stringify(victoriousBoard, null, 4));
 
+    if (victoriousBoard) {
         const answer = sumBoard(victoriousBoard) * number;
         console.log(`Answer: ${answer}`);
         break;

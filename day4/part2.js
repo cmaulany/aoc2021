@@ -40,12 +40,11 @@ const sumBoard = (board) => board.reduce(
 );
 
 let currentBoards = boards;
+
 for (let i = 0; i < numbers.length; i++) {
     const number = numbers[i];
 
-    currentBoards = currentBoards
-        .map(board => markNumber(board, number));
-
+    currentBoards = currentBoards.map(board => markNumber(board, number));
     const victoriousBoards = currentBoards.filter(boardHasWon);
 
     if (
@@ -53,7 +52,6 @@ for (let i = 0; i < numbers.length; i++) {
         victoriousBoards.length === 1
     ) {
         const lastBoard = currentBoards[0];
-        const sum = sumBoard(lastBoard);
         const answer = sumBoard(lastBoard) * number;
         console.log(`Answer: ${answer}`);
         break;
