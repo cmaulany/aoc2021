@@ -5,7 +5,7 @@ const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
 
 const [rawNumbers, ...rawBoards] = input.split('\n\n');
 
-const numbers = rawNumbers.split(',').map(n => Number(n));
+const numbers = rawNumbers.split(',').map(Number);
 
 const boards = rawBoards.map(
     rawBoard => rawBoard
