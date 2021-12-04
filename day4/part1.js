@@ -66,10 +66,10 @@ for (let i = 0; i < numbers.length; i++) {
     const number = numbers[i];
 
     currentBoards = currentBoards.map(board => markNumber(board, number));
-    const victoriousBoard = currentBoards.find(boardHasWon);
+    const wonBoard = currentBoards.find(boardHasWon);
 
-    if (victoriousBoard) {
-        const answer = sumBoard(victoriousBoard) * number;
+    if (wonBoard) {
+        const answer = sumBoard(wonBoard) * number;
         console.log(`Answer: ${answer}`);
         break;
     }

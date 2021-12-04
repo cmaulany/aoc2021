@@ -45,11 +45,11 @@ for (let i = 0; i < numbers.length; i++) {
     const number = numbers[i];
 
     currentBoards = currentBoards.map(board => markNumber(board, number));
-    const victoriousBoards = currentBoards.filter(boardHasWon);
+    const wonBoards = currentBoards.filter(boardHasWon);
 
     if (
         currentBoards.length === 1 &&
-        victoriousBoards.length === 1
+        wonBoards.length === 1
     ) {
         const lastBoard = currentBoards[0];
         const answer = sumBoard(lastBoard) * number;
@@ -57,5 +57,5 @@ for (let i = 0; i < numbers.length; i++) {
         break;
     }
 
-    currentBoards = currentBoards.filter(board => !victoriousBoards.includes(board));
+    currentBoards = currentBoards.filter(board => !wonBoards.includes(board));
 }
