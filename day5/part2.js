@@ -20,7 +20,7 @@ const addVent = (grid, { x, y }) => {
     grid[key] = (grid[key] ?? 0) + 1;
 
     return grid;
-}
+};
 
 const addLine = (grid, line) => {
     const length = Math.max(
