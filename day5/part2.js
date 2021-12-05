@@ -23,17 +23,17 @@ const addVent = (grid, { x, y }) => {
 };
 
 const addLine = (grid, line) => {
-    const length = Math.max(
+    const stepCount = Math.max(
         Math.abs(line.end.x - line.start.x),
         Math.abs(line.end.y - line.start.y)
     );
 
-    const deltaX = (line.end.x - line.start.x) / length;
-    const deltaY = (line.end.y - line.start.y) / length;
+    const deltaX = (line.end.x - line.start.x) / stepCount;
+    const deltaY = (line.end.y - line.start.y) / stepCount;
 
-    for (let i = 0; i <= length; i++) {
-        const x = line.start.x + deltaX * i;
-        const y = line.start.y + deltaY * i;
+    for (let step = 0; step <= stepCount; step++) {
+        const x = line.start.x + deltaX * step;
+        const y = line.start.y + deltaY * step;
         grid = addVent(grid, { x, y });
     }
 
