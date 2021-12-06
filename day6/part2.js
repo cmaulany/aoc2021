@@ -10,7 +10,7 @@ const addFish = (fishByAge, age, n = 1) => {
     return fishByAge;
 }
 
-const sumFishList = (fishByAge) => Object.values(fishByAge).reduce((sum, n) => sum + n, 0);
+const sumFish = (fishByAge) => Object.values(fishByAge).reduce((sum, n) => sum + n, 0);
 
 const tick = (fishByAge) => Object.entries(fishByAge).reduce(
     (fishByAge, entry) => {
@@ -34,5 +34,5 @@ for (let i = 0; i < 256; i++) {
     fishByAge = tick(fishByAge);
 }
 
-const answer = sumFishList(fishByAge);
+const answer = sumFish(fishByAge);
 console.log(`Answer: ${answer}`);
