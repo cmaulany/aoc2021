@@ -49,7 +49,7 @@ function calculatePatternMapper(signals) {
         !contains(n9, signal)
     );
 
-    return (pattern) => ({
+    const patternToNumber = {
         [sortString(n0)]: 0,
         [sortString(n1)]: 1,
         [sortString(n2)]: 2,
@@ -60,7 +60,9 @@ function calculatePatternMapper(signals) {
         [sortString(n7)]: 7,
         [sortString(n8)]: 8,
         [sortString(n9)]: 9
-    })[sortString(pattern)] ?? NaN;
+    };
+
+    return (pattern) => (patternToNumber)[sortString(pattern)] ?? NaN;
 }
 
 const outputs = pairs.map(pair => {
