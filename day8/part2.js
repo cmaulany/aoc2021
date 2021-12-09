@@ -2,10 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
+
 const pairs = input.split('\n').map(line => {
-    const [rawSignals, rawOutput] = line.trim().split('|');
-    const signals = rawSignals.trim().split(' ');
-    const output = rawOutput.trim().split(' ');
+    const [signals, output] = line.trim().split('|').map(part => part.trim().split(' '));
     return { signals, output };
 });
 
@@ -19,41 +18,35 @@ function calculatePatternMap(signals) {
     const n7 = signals.find(signal => signal.length === 3);
     const n8 = signals.find(signal => signal.length === 7);
 
-    const n6 = signals.find(
-        signal =>
-            signal.length === 6 &&
-            ![n1, n4, n7, n8].includes(signal) &&
-            !contains(signal, n7)
+    const n9 = signals.find(signal =>
+        signal.length === 6 &&
+        contains(signal, n4)
     );
 
-    const n9 = signals.find(
-        signal =>
-            signal.length === 6 &&
-            ![n1, n4, n7, n8, n6].includes(signal) &&
-            contains(signal, n4)
+    const n6 = signals.find(signal =>
+        signal.length === 6 &&
+        !contains(signal, n7)
     );
 
-    const n0 = signals.find(
-        signal =>
-            signal.length === 6 &&
-            ![n1, n4, n7, n8, n6, n9].includes(signal)
+    const n0 = signals.find(signal =>
+        signal.length === 6 &&
+        n6 !== signal &&
+        n9 !== signal
     );
 
-    const n3 = signals.find(
-        signal =>
-            ![n1, n4, n7, n8, n0, n6, n9].includes(signal) &&
-            contains(signal, n1)
+    const n3 = signals.find(signal =>
+        signal.length === 5 &&
+        contains(signal, n1)
     );
 
-    const n5 = signals.find(
-        signal =>
-            ![n1, n4, n7, n8, n0, n6, n9, n3].includes(signal) &&
-            contains(n6, signal)
+    const n5 = signals.find(signal =>
+        signal.length === 5 &&
+        contains(n6, signal)
     );
 
-    const n2 = signals.find(
-        signal =>
-            ![n1, n4, n7, n8, n0, n6, n9, n3, n5].includes(signal)
+    const n2 = signals.find(signal =>
+        signal.length === 5 &&
+        !contains(n9, signal)
     );
 
     return {
@@ -72,10 +65,13 @@ function calculatePatternMap(signals) {
 
 const outputs = pairs.map(pair => {
     const patternMap = calculatePatternMap(pair.signals);
-    return pair.output.map(pattern => {
+
+    const sNumber = pair.output.map(pattern => {
         return patternMap[sortString(pattern)];
     }).join('');
-}).map(Number);
+
+    return Number(sNumber);
+});
 
 const answer = outputs.reduce((sum, output) => sum + output, 0);
 console.log(`Answer: ${answer}`);

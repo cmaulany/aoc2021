@@ -4,9 +4,7 @@ const path = require('path');
 const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
 
 const pairs = input.split('\n').map(line => {
-    const [rawSignals, rawOutput] = line.trim().split('|');
-    const signals = rawSignals.trim().split(' ');
-    const output = rawOutput.trim().split(' ');
+    const [signals, output] = line.trim().split('|').map(part => part.trim().split(' '));
     return { signals, output };
 });
 
