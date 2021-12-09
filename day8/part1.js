@@ -32,8 +32,7 @@ const answer = pairs.reduce(
                 return number > 0 ? count + 1 : count
             },
             count
-        )
-    ,
+        ),
     0
 );
 
