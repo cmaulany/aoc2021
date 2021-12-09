@@ -5,11 +5,8 @@ const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
 
 const map = input.split('\n').map(line => line.trim().split('').map(Number));
 
-const getNeighbors = (map, { x, y }) => {
-    const mapWidth = map[0].length;
-    const mapHeight = map.length;
-
-    const neighbors = [
+const getNeighbors = (map, { x, y }) =>
+    [
         { x: -1, y: 0 },
         { x: +1, y: 0 },
         { x: 0, y: -1 },
@@ -20,12 +17,9 @@ const getNeighbors = (map, { x, y }) => {
             y: delta.y + y
         }))
         .filter(({ x, y }) =>
-            x >= 0 && x < mapWidth &&
-            y >= 0 && y < mapHeight
+            x >= 0 && x < map[0].length &&
+            y >= 0 && y < map.length
         );
-
-    return neighbors;
-};
 
 const isLowPoint = (map, { x, y }) =>
     getNeighbors(map, { x, y }).every(

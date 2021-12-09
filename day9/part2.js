@@ -5,11 +5,8 @@ const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
 
 const map = input.split('\n').map(line => line.trim().split('').map(Number));
 
-const getNeighbors = (map, { x, y }) => {
-    const mapWidth = map[0].length;
-    const mapHeight = map.length;
-
-    const neighbors = [
+const getNeighbors = (map, { x, y }) =>
+    [
         { x: -1, y: 0 },
         { x: +1, y: 0 },
         { x: 0, y: -1 },
@@ -20,12 +17,9 @@ const getNeighbors = (map, { x, y }) => {
             y: delta.y + y
         }))
         .filter(({ x, y }) =>
-            x >= 0 && x < mapWidth &&
-            y >= 0 && y < mapHeight
+            x >= 0 && x < map[0].length &&
+            y >= 0 && y < map.length
         );
-
-    return neighbors;
-};
 
 const isLowPoint = (map, { x, y }) =>
     getNeighbors(map, { x, y }).every(
@@ -43,28 +37,23 @@ const getLowPoints = (map) => map.reduce(
     []
 );
 
-const getBasin = (map, lowPoint) => {
-    const height = map[lowPoint.y][lowPoint.x];
-    const neighbors = getNeighbors(map, lowPoint);
-
-    const higherNeighbors = neighbors
+const getBasin = (map, lowPoint, visited = []) => {
+    const basinNeighbors = getNeighbors(map, lowPoint)
+        .filter(position => !visited.some(other =>
+            other.x === position.x &&
+            other.y === position.y
+        ))
         .filter(neighbor => {
             const neighborHeight = map[neighbor.y][neighbor.x];
-            return neighborHeight < 9 && neighborHeight > height;
+            return neighborHeight < 9 && neighborHeight > map[lowPoint.y][lowPoint.x];
         });
 
-    const basins = [
-        lowPoint,
-        ...higherNeighbors.map(neighbor => getBasin(map, neighbor)).flat()
-    ];
+    visited.push(...basinNeighbors);
 
-    return basins.filter(
-        (position1, index1) => !basins.some(
-            (position2, index2) =>
-                index1 < index2 &&
-                position1.x === position2.x &&
-                position1.y === position2.y
-        ));
+    return [
+        lowPoint,
+        ...basinNeighbors.map(neighbor => getBasin(map, neighbor, visited))
+    ].flat();
 };
 
 const basins = getLowPoints(map).map(lowPoint => getBasin(map, lowPoint));
