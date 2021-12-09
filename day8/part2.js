@@ -12,7 +12,7 @@ const contains = (a, b) => b.split('').every(char => a.includes(char));
 
 const sortString = (s) => s.split('').sort().join('');
 
-function calculatePatternMap(signals) {
+function calculatePatternMapper(signals) {
     const n1 = signals.find(signal => signal.length === 2);
     const n4 = signals.find(signal => signal.length === 4);
     const n7 = signals.find(signal => signal.length === 3);
@@ -49,7 +49,7 @@ function calculatePatternMap(signals) {
         !contains(n9, signal)
     );
 
-    return {
+    return (pattern) => ({
         [sortString(n0)]: 0,
         [sortString(n1)]: 1,
         [sortString(n2)]: 2,
@@ -60,17 +60,15 @@ function calculatePatternMap(signals) {
         [sortString(n7)]: 7,
         [sortString(n8)]: 8,
         [sortString(n9)]: 9
-    }
+    })[sortString(pattern)] ?? NaN;
 }
 
 const outputs = pairs.map(pair => {
-    const patternMap = calculatePatternMap(pair.signals);
+    const patternMapper = calculatePatternMapper(pair.signals);
 
-    const sNumber = pair.output.map(pattern => {
-        return patternMap[sortString(pattern)];
-    }).join('');
+    const outputAsString = pair.output.map(patternMapper).join('');
 
-    return Number(sNumber);
+    return Number(outputAsString);
 });
 
 const answer = outputs.reduce((sum, output) => sum + output, 0);
