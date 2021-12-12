@@ -36,15 +36,13 @@ function findPaths(graph, from, to, path = [from]) {
             !path.includes(neighbor)
     );
 
-    const paths = nextNodes.reduce(
+    return nextNodes.reduce(
         (paths, nextNode) => [
             ...paths,
             ...findPaths(graph, nextNode, to, [...path, nextNode])
         ],
         []
     );
-
-    return paths;
 }
 
 const paths = findPaths(graph, 'start', 'end');
