@@ -33,7 +33,7 @@ function findPaths(graph, from, to, path = [from]) {
     const nextNodes = graph.nodes[from].neighbors.filter(
         neighbor =>
             neighbor.toUpperCase() === neighbor ||
-            path.every(other => other !== neighbor)
+            !path.includes(neighbor)
     );
 
     const paths = nextNodes.reduce(

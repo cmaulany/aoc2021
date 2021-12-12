@@ -45,7 +45,7 @@ function findPaths(graph, from, to, path = [from]) {
             neighbor !== 'start' && (
                 canRevisitSmallCave ||
                 neighbor.toUpperCase() === neighbor ||
-                path.every(node => node !== neighbor)
+                !path.includes(neighbor)
             )
     );
 
