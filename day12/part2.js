@@ -25,7 +25,7 @@ const nodes = edges.reduce((nodes, edge) => {
 
 const graph = { edges, nodes };
 
-function findPaths(graph, from, to, path = [from]) {
+function getPaths(graph, from, to, path = [from]) {
     if (from === to) {
         return [path];
     }
@@ -52,13 +52,13 @@ function findPaths(graph, from, to, path = [from]) {
     return nextNodes.reduce(
         (paths, nextNode) => [
             ...paths,
-            ...findPaths(graph, nextNode, to, [...path, nextNode])
+            ...getPaths(graph, nextNode, to, [...path, nextNode])
         ],
         []
     );
 }
 
-const paths = findPaths(graph, 'start', 'end');
+const paths = getPaths(graph, 'start', 'end');
 
 const answer = paths.length;
 console.log(`Answer: ${answer}`);
