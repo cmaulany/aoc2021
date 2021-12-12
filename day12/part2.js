@@ -40,7 +40,6 @@ function findPaths(graph, from, to, path = [from]) {
             )
     );
 
-
     const nextNodes = graph.nodes[from].neighbors.filter(
         neighbor =>
             neighbor !== 'start' && (
