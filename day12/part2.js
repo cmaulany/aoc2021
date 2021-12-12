@@ -35,8 +35,8 @@ function findPaths(graph, from, to, path = [from]) {
             node.toUpperCase() === node ||
             path.every(
                 (other, j) =>
-                    i === j ||
-                    node !== other
+                    node !== other ||
+                    i === j
             )
     );
 
