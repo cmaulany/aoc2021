@@ -65,8 +65,7 @@ const fold = (dots, { axis, distance }) => {
     return overlay(static, flipped);
 };
 
-const result = folds.reduce(fold, dots);
 const answerPart1 = fold(dots, folds[0]).length;
-const answerPart2 = dotsToString(result);
+const answerPart2 = dotsToString(folds.reduce(fold, dots));
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: \n${answerPart2}`)
