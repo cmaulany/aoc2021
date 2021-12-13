@@ -54,7 +54,7 @@ const flipAxis = (dots, axis, size) => dots.map(dot => ({
 }));
 
 const fold = (dots, { axis, distance }) => {
-    const firstHalf = dots.filter(dot => dot[axis] <= distance - 1);
+    const firstHalf = dots.filter(dot => dot[axis] < distance);
     const secondHalf = dots
         .filter(dot => dot[axis] > distance)
         .map(dot => ({
