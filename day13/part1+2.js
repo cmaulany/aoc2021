@@ -15,21 +15,6 @@ const folds = foldsInput.split('\n').map(line => {
     return { axis, distance: Number(distance) };
 });
 
-const overlay = (aDots, bDots) => [
-    ...aDots,
-    ...bDots.filter(
-        ({ x, y }) => aDots.every(dot =>
-            dot.x !== x ||
-            dot.y !== y
-        )
-    )
-];
-
-const flip = (dots, axis, size) => dots.map(dot => ({
-    ...dot,
-    [axis]: size - dot[axis],
-}));
-
 function dotsToString(dots) {
     const positionToDot = dots.reduce((positionToDot, { x, y }) => {
         positionToDot[`${x},${y}`] = true;
@@ -52,6 +37,21 @@ function dotsToString(dots) {
 
     return lines.join('\n');
 }
+
+const overlay = (aDots, bDots) => [
+    ...aDots,
+    ...bDots.filter(
+        ({ x, y }) => aDots.every(dot =>
+            dot.x !== x ||
+            dot.y !== y
+        )
+    )
+];
+
+const flip = (dots, axis, size) => dots.map(dot => ({
+    ...dot,
+    [axis]: size - dot[axis],
+}));
 
 const fold = (dots, { axis, distance }) => {
     const static = dots.filter(dot => dot[axis] <= distance - 1);
