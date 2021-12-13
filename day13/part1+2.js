@@ -11,8 +11,8 @@ const dots = dotsInput.split('\n').map(line => {
 });
 
 const folds = foldsInput.split('\n').map(line => {
-    const [axis, distance] = line.substr('fold along '.length).split('=');
-    return { axis, distance: Number(distance) };
+    const [axis, offset] = line.substr('fold along '.length).split('=');
+    return { axis, offset: Number(offset) };
 });
 
 function dotsToString(dots) {
@@ -53,10 +53,10 @@ const flipAxis = (dots, axis, offset = 0) => dots.map(dot => ({
     [axis]: 2 * offset - dot[axis],
 }));
 
-const fold = (dots, { axis, distance }) => {
-    const firstHalf = dots.filter(dot => dot[axis] < distance);
-    const secondHalf = dots.filter(dot => dot[axis] > distance);
-    const flipped = flipAxis(secondHalf, axis, distance);
+const fold = (dots, { axis, offset }) => {
+    const firstHalf = dots.filter(dot => dot[axis] < offset);
+    const secondHalf = dots.filter(dot => dot[axis] > offset);
+    const flipped = flipAxis(secondHalf, axis, offset);
     return overlay(firstHalf, flipped);
 };
 
