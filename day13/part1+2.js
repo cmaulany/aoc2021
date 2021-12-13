@@ -50,7 +50,7 @@ const overlay = (aDots, bDots) => [
 
 const flipAxis = (dots, axis, offset = 0) => dots.map(dot => ({
     ...dot,
-    [axis]: -(dot[axis] - offset) + offset,
+    [axis]: 2 * offset - dot[axis],
 }));
 
 const fold = (dots, { axis, distance }) => {
