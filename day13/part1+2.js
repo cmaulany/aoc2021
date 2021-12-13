@@ -48,20 +48,15 @@ const overlay = (aDots, bDots) => [
     )
 ];
 
-const flipAxis = (dots, axis, size) => dots.map(dot => ({
+const flipAxis = (dots, axis, offset = 0) => dots.map(dot => ({
     ...dot,
-    [axis]: size - dot[axis],
+    [axis]: -(dot[axis] - offset) + offset,
 }));
 
 const fold = (dots, { axis, distance }) => {
     const firstHalf = dots.filter(dot => dot[axis] < distance);
-    const secondHalf = dots
-        .filter(dot => dot[axis] > distance)
-        .map(dot => ({
-            ...dot,
-            [axis]: dot[axis] - distance - 1
-        }));
-    const flipped = flipAxis(secondHalf, axis, distance - 1);
+    const secondHalf = dots.filter(dot => dot[axis] > distance);
+    const flipped = flipAxis(secondHalf, axis, distance);
     return overlay(firstHalf, flipped);
 };
 
@@ -69,3 +64,5 @@ const answerPart1 = fold(dots, folds[0]).length;
 const answerPart2 = dotsToString(folds.reduce(fold, dots));
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: \n${answerPart2}`);
+
+console.log(dotsToString(flipAxis(folds, 'x', 0)))
