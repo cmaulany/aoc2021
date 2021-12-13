@@ -68,4 +68,4 @@ const fold = (dots, { axis, distance }) => {
 const answerPart1 = fold(dots, folds[0]).length;
 const answerPart2 = dotsToString(folds.reduce(fold, dots));
 console.log(`Answer Part 1: ${answerPart1}`);
-console.log(`Answer Part 2: \n${answerPart2}`)
+console.log(`Answer Part 2: \n${answerPart2}`);
