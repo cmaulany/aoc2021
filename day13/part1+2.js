@@ -48,9 +48,9 @@ const overlay = (aDots, bDots) => [
     )
 ];
 
-const flip = (dots, direction, size) => dots.map(dot => ({
+const flipAxis = (dots, axis, size) => dots.map(dot => ({
     ...dot,
-    [direction]: size - dot[direction],
+    [axis]: size - dot[axis],
 }));
 
 const fold = (dots, { axis, distance }) => {
@@ -61,7 +61,7 @@ const fold = (dots, { axis, distance }) => {
             ...dot,
             [axis]: dot[axis] - distance - 1
         }));
-    const flipped = flip(dynamic, axis, distance - 1);
+    const flipped = flipAxis(dynamic, axis, distance - 1);
     return overlay(static, flipped);
 };
 
