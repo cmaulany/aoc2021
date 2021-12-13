@@ -54,15 +54,15 @@ const flipAxis = (dots, axis, size) => dots.map(dot => ({
 }));
 
 const fold = (dots, { axis, distance }) => {
-    const static = dots.filter(dot => dot[axis] <= distance - 1);
-    const dynamic = dots
+    const firstHalf = dots.filter(dot => dot[axis] <= distance - 1);
+    const secondHalf = dots
         .filter(dot => dot[axis] > distance)
         .map(dot => ({
             ...dot,
             [axis]: dot[axis] - distance - 1
         }));
-    const flipped = flipAxis(dynamic, axis, distance - 1);
-    return overlay(static, flipped);
+    const flipped = flipAxis(secondHalf, axis, distance - 1);
+    return overlay(firstHalf, flipped);
 };
 
 const answerPart1 = fold(dots, folds[0]).length;
