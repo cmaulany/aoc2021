@@ -49,8 +49,8 @@ const tick = (state) => {
     nextMap = flashPositions.reduce(flash, nextMap);
 
     const newFlashCount = nextMap.reduce(
-        (flashCount, row, y) => row.reduce(
-            (flashCount, energyLevel, x) =>
+        (flashCount, row) => row.reduce(
+            (flashCount, energyLevel) =>
                 energyLevel > 9 ?
                     flashCount + 1 :
                     flashCount,
