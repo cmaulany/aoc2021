@@ -55,10 +55,10 @@ const growAndCount = memoize(function (template, steps = 1) {
             countChars(template);
     }
 
-    const middleIndex = Math.ceil(template.length / 2);
+    const middleIndex = Math.floor(template.length / 2);
 
-    const left = template.slice(0, middleIndex);
-    const right = template.slice(middleIndex - 1);
+    const left = template.slice(0, middleIndex + 1);
+    const right = template.slice(middleIndex);
 
     const leftCount = growAndCount(left, steps);
     const rightCount = growAndCount(right, steps);
