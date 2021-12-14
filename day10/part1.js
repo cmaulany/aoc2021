@@ -12,11 +12,11 @@ const charToScore = {
     '>': 25137
 };
 
-const closeToOpenTag = {
-    ')': '(',
-    ']': '[',
-    '}': '{',
-    '>': '<'
+const openToCloseTag = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+    '<': '>'
 };
 
 function validateLine(line) {
@@ -27,9 +27,8 @@ function validateLine(line) {
             stack.push(char);
         }
         else if (')]}>'.includes(char)) {
-            const openTag = stack.pop();
-            const oTag = closeToOpenTag[char]
-            return openTag !== oTag;
+            const expectedCloseTag = openToCloseTag[stack.pop()];
+            return char !== expectedCloseTag;
         }
     });
 }
