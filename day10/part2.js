@@ -12,7 +12,7 @@ const charToScore = {
     '>': 4
 };
 
-const openToCloseTag = {
+const tags = {
     '(': ')',
     '[': ']',
     '{': '}',
@@ -23,11 +23,11 @@ function validateLine(line) {
     const stack = [];
 
     return line.split('').findIndex(char => {
-        if ('([{<'.includes(char)) {
+        if (Object.keys(tags).includes(char)) {
             stack.push(char);
         }
-        else if (')]}>'.includes(char)) {
-            const expectedCloseTag = openToCloseTag[stack.pop()];
+        else if (Object.values(tags).includes(char)) {
+            const expectedCloseTag = tags[stack.pop()];
             return char !== expectedCloseTag;
         }
     });
@@ -37,15 +37,15 @@ function getCompletionString(line) {
     const stack = [];
 
     line.split('').forEach(char => {
-        if ('([{<'.includes(char)) {
+        if (Object.keys(tags).includes(char)) {
             stack.push(char);
         }
-        else if (')]}>'.includes(char)) {
+        else if (Object.values(tags).includes(char)) {
             stack.pop();
         }
     });
 
-    return stack.reverse().map(char => openToCloseTag[char]).join('');
+    return stack.reverse().map(char => tags[char]).join('');
 }
 
 const completionStringToScore = (completionString) => completionString.split('').reduce(
