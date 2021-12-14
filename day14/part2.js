@@ -48,7 +48,7 @@ const growAndCount = memoize(function (template, steps = 1) {
         return countChars(template);
     }
 
-    if (template.length === 2) {
+    if (template.length <= 2) {
         const insert = rules[template];
         return insert ?
             growAndCount(template[0] + insert + template[1], steps - 1) :
