@@ -11,6 +11,19 @@ const rules = rest.reduce((rules, rule) => {
     return rules;
 }, {});
 
+const memoize = (callback) => {
+    const memo = {};
+    return (...args) => {
+        const key = JSON.stringify(args);
+        if (memo.hasOwnProperty(key)) {
+            return memo[key];
+        }
+        const result = callback(...args);
+        memo[key] = result;
+        return result;
+    };
+};
+
 function countChars(str) {
     return str.split('').reduce((count, char) => {
         count[char] = (count[char] ?? 0) + 1;
@@ -18,50 +31,41 @@ function countChars(str) {
     }, {})
 }
 
-const cache = {};
+const growAndCount = memoize(function (template, steps = 1) {
+    if (steps <= 0) {
+        return countChars(template);
+    }
 
-function growAndCount(template, steps = 1) {
-    const key = `${template},${steps}`;
-    let result;
-    if (cache[key]) {
-        result = cache[key];
-    }
-    else if (steps <= 0) {
-        result = countChars(template);
-    }
-    else if (template.length === 2) {
+    if (template.length === 2) {
         const insert = rules[template];
-        result = insert ?
+        return insert ?
             growAndCount(template[0] + insert + template[1], steps - 1) :
             countChars(template);
     }
-    else {
-        const middle = Math.ceil(template.length / 2);
 
-        const left = template.slice(0, middle);
-        const right = template.slice(middle - 1);
+    const middle = Math.ceil(template.length / 2);
 
-        const leftCount = growAndCount(left, steps)
-        const rightCount = growAndCount(right, steps);
+    const left = template.slice(0, middle);
+    const right = template.slice(middle - 1);
 
-        const count = [
-            ...Object.entries(leftCount),
-            ...Object.entries(rightCount)
-        ].reduce(
-            (count, [char, n]) => {
-                count[char] = (count[char] ?? 0) + n;
-                return count;
-            },
-            {}
-        );
+    const leftCount = growAndCount(left, steps)
+    const rightCount = growAndCount(right, steps);
 
-        count[right[0]]--;
+    const count = [
+        ...Object.entries(leftCount),
+        ...Object.entries(rightCount)
+    ].reduce(
+        (count, [char, n]) => {
+            count[char] = (count[char] ?? 0) + n;
+            return count;
+        },
+        {}
+    );
 
-        result = count;
-    }
-    cache[key] = result;
-    return result;
-}
+    count[right[0]]--;
+
+    return count;
+});
 
 const count = growAndCount(template, 40);
 
