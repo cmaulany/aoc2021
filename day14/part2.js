@@ -24,12 +24,24 @@ const memoize = (callback) => {
     };
 };
 
-function countChars(str) {
-    return str.split('').reduce((count, char) => {
+const countChars = (str) => str.split('').reduce(
+    (count, char) => {
         count[char] = (count[char] ?? 0) + 1;
         return count;
-    }, {})
-}
+    },
+    {}
+);
+
+const addCounts = (...args) => args
+    .map(Object.entries)
+    .flat()
+    .reduce(
+        (count, [char, n]) => {
+            count[char] = (count[char] ?? 0) + n;
+            return count;
+        },
+        {}
+    );
 
 const growAndCount = memoize(function (template, steps = 1) {
     if (steps <= 0) {
@@ -43,26 +55,18 @@ const growAndCount = memoize(function (template, steps = 1) {
             countChars(template);
     }
 
-    const middle = Math.ceil(template.length / 2);
+    const middleIndex = Math.ceil(template.length / 2);
 
-    const left = template.slice(0, middle);
-    const right = template.slice(middle - 1);
+    const left = template.slice(0, middleIndex);
+    const right = template.slice(middleIndex - 1);
 
-    const leftCount = growAndCount(left, steps)
+    const leftCount = growAndCount(left, steps);
     const rightCount = growAndCount(right, steps);
 
-    const count = [
-        ...Object.entries(leftCount),
-        ...Object.entries(rightCount)
-    ].reduce(
-        (count, [char, n]) => {
-            count[char] = (count[char] ?? 0) + n;
-            return count;
-        },
-        {}
-    );
+    const count = addCounts(leftCount, rightCount);
 
-    count[right[0]]--;
+    const overlappingChar = right[0];
+    count[overlappingChar]--;
 
     return count;
 });
