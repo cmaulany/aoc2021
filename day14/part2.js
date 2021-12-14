@@ -43,7 +43,7 @@ const addCounts = (...args) => args
         {}
     );
 
-const growAndCount = memoize(function (template, steps = 1) {
+const growAndCount = memoize(function (template, rules, steps = 1) {
     if (steps <= 0) {
         return countChars(template);
     }
@@ -51,7 +51,7 @@ const growAndCount = memoize(function (template, steps = 1) {
     if (template.length <= 2) {
         const insert = rules[template];
         return insert ?
-            growAndCount(template[0] + insert + template[1], steps - 1) :
+            growAndCount(template[0] + insert + template[1], rules, steps - 1) :
             countChars(template);
     }
 
@@ -60,8 +60,8 @@ const growAndCount = memoize(function (template, steps = 1) {
     const left = template.slice(0, middleIndex + 1);
     const right = template.slice(middleIndex);
 
-    const leftCount = growAndCount(left, steps);
-    const rightCount = growAndCount(right, steps);
+    const leftCount = growAndCount(left, rules, steps);
+    const rightCount = growAndCount(right, rules, steps);
 
     const count = addCounts(leftCount, rightCount);
 
@@ -71,7 +71,7 @@ const growAndCount = memoize(function (template, steps = 1) {
     return count;
 });
 
-const count = growAndCount(template, 40);
+const count = growAndCount(template, rules, 40);
 
 const min = Object.values(count).reduce((min, n) => Math.min(min, n));
 const max = Object.values(count).reduce((max, n) => Math.max(max, n));
