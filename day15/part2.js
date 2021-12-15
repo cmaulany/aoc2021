@@ -53,15 +53,15 @@ const getNeighbors = (map, { x, y }) =>
 
 function createUniqueQueue() {
     const data = [];
-    // const valueExists = {};
+    const valueExists = {};
 
     const add = (value, priority) => {
-        // const key = JSON.stringify(value);
-        // const exists = valueExists[key];
-        // if (exists) {
-        //     const index = data.findIndex(item => item.value === value);
-        //     data.splice(index, 1);
-        // }
+        const key = JSON.stringify(value);
+        const exists = valueExists[key];
+        if (exists) {
+            const index = data.findIndex(item => item.value === value);
+            data.splice(index, 1);
+        }
 
         const index = data.findIndex(item => item.priority > priority);
         if (index <= 0) {
@@ -69,14 +69,14 @@ function createUniqueQueue() {
         } else {
             data.splice(index, 0, { value, priority })
         }
-        // valueExists[key] = true;
+        valueExists[key] = true;
     }
 
     const hasNext = () => data.length > 0;
 
     const pop = () => {
         const value = data.shift().value;
-        // delete valueExists[JSON.stringify(value)];
+        delete valueExists[JSON.stringify(value)];
         return value;
     };
 
