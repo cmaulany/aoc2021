@@ -20,22 +20,19 @@ const input = fs.readFileSync(path_.resolve(__dirname, 'input.txt'), 'utf8');
 // 3111
 // 3331`;
 
-const map = input.split('\n').map(line => line.trim().split('').map(Number));
+const initialMap = input.split('\n').map(line => line.trim().split('').map(Number));
 
 const expandedMap = [];
-const width = map[0].length;
-const height = map.length;
+const width = initialMap[0].length;
+const height = initialMap.length;
 for (let y = 0; y < height * 5; y++) {
     expandedMap[y] = [];
     for (let x = 0; x < width * 5; x++) {
         const extraRisk = Math.floor(x / width) + Math.floor(y / height);
-        const newRisk = (map[y % height][x % width] + extraRisk);
+        const newRisk = (initialMap[y % height][x % width] + extraRisk);
         expandedMap[y][x] = newRisk - Math.floor(newRisk / 10) * 9;
     }
 }
-
-const start = { x: 0, y: 0 };
-const end = { x: expandedMap[0].length - 1, y: expandedMap.length - 1 };
 
 const getNeighbors = (map, { x, y }) =>
     [
@@ -54,8 +51,42 @@ const getNeighbors = (map, { x, y }) =>
         );
 
 
+function createUniqueQueue() {
+    const data = [];
+    // const valueExists = {};
+
+    const add = (value, priority) => {
+        // const key = JSON.stringify(value);
+        // const exists = valueExists[key];
+        // if (exists) {
+        //     const index = data.findIndex(item => item.value === value);
+        //     data.splice(index, 1);
+        // }
+
+        const index = data.findIndex(item => item.priority > priority);
+        if (index <= 0) {
+            data.push({ value, priority });
+        } else {
+            data.splice(index, 0, { value, priority })
+        }
+        // valueExists[key] = true;
+    }
+
+    const hasNext = () => data.length > 0;
+
+    const pop = () => {
+        const value = data.shift().value;
+        // delete valueExists[JSON.stringify(value)];
+        return value;
+    };
+
+    return { add, pop, hasNext };
+}
+
 function findPath(map, from, to) {
-    const toVisit = [from];
+    const toVisit = createUniqueQueue();
+    toVisit.add(from, 0);
+
     const visisted = {};
     const scores = {};
     scores[`${from.x},${from.y}`] = 0;
@@ -71,47 +102,45 @@ function findPath(map, from, to) {
         return path.reverse();
     }
 
-    while (toVisit.length > 0) {
-        console.log(Object.keys(visisted).length);
-        toVisit.sort((a, b) => scores[`${a.x},${a.y}`] > scores[`${b.x},${b.y}`] ? 1 : -1);
-        const node = toVisit.shift();
+    while (toVisit.hasNext()) {
+        const counter = Object.keys(visisted).length;
+        if (counter % 1000 === 0) {
+            console.log(counter);
+        }
+        const node = toVisit.pop();
 
         if (node.x === to.x && node.y === to.y) {
-            break;
+            return toPath();
         }
 
-        const score = scores[`${node.x},${node.y}`];
+        const nodeScore = scores[`${node.x},${node.y}`];
         const neighbors = getNeighbors(map, node);
 
-        neighbors.forEach(next => {
-            const newScore = score + map[next.y][next.x];
-            const key = `${next.x},${next.y}`;
+        neighbors.forEach(neighbor => {
+            const newScore = nodeScore + map[neighbor.y][neighbor.x];
+            const key = `${neighbor.x},${neighbor.y}`;
             const currentScore = scores[key] ?? Number.MAX_SAFE_INTEGER;
             if (newScore < currentScore) {
+                const score = Math.min(newScore, currentScore);
                 cameFrom[key] = node;
-                scores[key] = Math.min(newScore, currentScore);
+                scores[key] = score;
+                if (!visisted[`${neighbor.x},${neighbor.y}`]) {
+                    toVisit.add(neighbor, score);
+                }
             }
+
         });
 
-        const neighborsToVisit = neighbors.filter(
-            neighbor =>
-                !visisted[`${neighbor.x},${neighbor.y}`] &&
-                toVisit.every(
-                    other =>
-                        other.x !== neighbor.x ||
-                        other.y !== neighbor.y
-                )
-        );
-
-        toVisit.push(...neighborsToVisit);
         visisted[`${node.x},${node.y}`] = true;
     }
 
-    return toPath();
+    return [];
 }
 
-// console.log(expandedMap);
+const map = expandedMap;
+const start = { x: 0, y: 0 };
+const end = { x: map[0].length - 1, y: map.length - 1 };
 
-const path = findPath(expandedMap, start, end);
-const risk = path.reduce((risk, node) => risk + expandedMap[node.y][node.x], 0);
+const path = findPath(map, start, end);
+const risk = path.reduce((risk, node) => risk + map[node.y][node.x], 0);
 console.log(risk);
