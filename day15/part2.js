@@ -4,22 +4,6 @@ const path_ = require('path');
 
 const input = fs.readFileSync(path_.resolve(__dirname, 'input.txt'), 'utf8');
 
-// const input = `1163751742
-// 1381373672
-// 2136511328
-// 3694931569
-// 7463417111
-// 1319128137
-// 1359912421
-// 3125421639
-// 1293138521
-// 2311944581`;
-
-// const input = `1133
-// 3133
-// 3111
-// 3331`;
-
 const initialMap = input.split('\n').map(line => line.trim().split('').map(Number));
 
 const expandedMap = [];
@@ -103,10 +87,6 @@ function findPath(map, from, to) {
     }
 
     while (toVisit.hasNext()) {
-        const counter = Object.keys(visisted).length;
-        if (counter % 1000 === 0) {
-            console.log(counter);
-        }
         const node = toVisit.pop();
 
         if (node.x === to.x && node.y === to.y) {
