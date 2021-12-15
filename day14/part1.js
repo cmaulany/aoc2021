@@ -23,7 +23,6 @@ function grow (templateArray, rules) {
     return templateArray;
 }
 
-
 let templateArray = template.split('');
 for (let i = 0; i < 10; i++) {
     templateArray = grow(templateArray, rules);

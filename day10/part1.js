@@ -12,24 +12,23 @@ const charToScore = {
     '>': 25137
 };
 
-const closeToOpenTag = {
-    ')': '(',
-    ']': '[',
-    '}': '{',
-    '>': '<'
+const tags = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+    '<': '>'
 };
 
 function validateLine(line) {
     const stack = [];
 
     return line.split('').findIndex(char => {
-        if ('([{<'.includes(char)) {
+        if (Object.keys(tags).includes(char)) {
             stack.push(char);
         }
-        else if (')]}>'.includes(char)) {
-            const openTag = stack.pop();
-            const oTag = closeToOpenTag[char]
-            return openTag !== oTag;
+        else if (Object.values(tags).includes(char)) {
+            const expectedCloseTag = tags[stack.pop()];
+            return char !== expectedCloseTag;
         }
     });
 }

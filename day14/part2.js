@@ -15,12 +15,9 @@ const memoize = (callback) => {
     const memo = {};
     return (...args) => {
         const key = JSON.stringify(args);
-        if (memo.hasOwnProperty(key)) {
-            return memo[key];
-        }
-        const result = callback(...args);
-        memo[key] = result;
-        return result;
+        return memo.hasOwnProperty(key) ?
+            memo[key] :
+            memo[key] = callback(...args);
     };
 };
 
