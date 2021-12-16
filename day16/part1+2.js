@@ -22,7 +22,7 @@ const hexToBinary = (hex) => hex.split('').map(char => ({
     "F": "1111"
 })[char]).join('');
 
-class Reader {
+class PacketReader {
 
     position = 0;
     data;
@@ -129,7 +129,7 @@ const sumVersion = (packet) => {
 };
 
 const binaryInput = hexToBinary(input);
-const reader = new Reader(binaryInput);
+const reader = new PacketReader(binaryInput);
 const packet = reader.readPacket();
 
 const answerPart1 = sumVersion(packet);
