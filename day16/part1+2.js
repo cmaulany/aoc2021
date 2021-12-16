@@ -97,23 +97,24 @@ class PacketReader {
 };
 
 const evaluatePacket = (packet) => {
+    const subResults = packet.subPackets?.map(evaluatePacket);
     switch (packet.typeId) {
         case 0:
-            return packet.subPackets.reduce((sum, packet) => sum + evaluatePacket(packet), 0);
+            return subResults.reduce((sum, result) => sum + result);
         case 1:
-            return packet.subPackets.reduce((product, packet) => product * evaluatePacket(packet), 1);
+            return subResults.reduce((product, result) => product * result, 1);
         case 2:
-            return packet.subPackets.reduce((min, packet) => Math.min(min, evaluatePacket(packet)), Infinity);
+            return subResults.reduce((min, result) => Math.min(min, result), Infinity);
         case 3:
-            return packet.subPackets.reduce((max, packet) => Math.max(max, evaluatePacket(packet)), -Infinity);
+            return subResults.reduce((max, result) => Math.max(max, result), -Infinity);
         case 4:
             return packet.value;
         case 5:
-            return evaluatePacket(packet.subPackets[0]) > evaluatePacket(packet.subPackets[1]) ? 1 : 0;
+            return subResults[0] > subResults[1] ? 1 : 0;
         case 6:
-            return evaluatePacket(packet.subPackets[0]) < evaluatePacket(packet.subPackets[1]) ? 1 : 0;
+            return subResults[0] < subResults[1] ? 1 : 0;
         case 7:
-            return evaluatePacket(packet.subPackets[0]) === evaluatePacket(packet.subPackets[1]) ? 1 : 0;
+            return subResults[0] === subResults[1] ? 1 : 0;
 
     }
 };
