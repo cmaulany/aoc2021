@@ -84,7 +84,6 @@ class PacketReader {
             const totalLength = parseInt(this.readBits(15), 2);
             const startPosition = this.position;
             do {
-                console.log(subPackets);
                 subPackets.push(this.readPacket());
             } while (this.position < startPosition + totalLength);
         } else {
@@ -110,11 +109,11 @@ const evaluatePacket = (packet) => {
         case 4:
             return packet.value;
         case 5:
-            return evaluatePacket(packet.subPackets[0]) > evaluatePacket(packet.subPackets[1]);
+            return evaluatePacket(packet.subPackets[0]) > evaluatePacket(packet.subPackets[1]) ? 1 : 0;
         case 6:
-            return evaluatePacket(packet.subPackets[0]) < evaluatePacket(packet.subPackets[1]);
+            return evaluatePacket(packet.subPackets[0]) < evaluatePacket(packet.subPackets[1]) ? 1 : 0;
         case 7:
-            return evaluatePacket(packet.subPackets[0]) === evaluatePacket(packet.subPackets[1]);
+            return evaluatePacket(packet.subPackets[0]) === evaluatePacket(packet.subPackets[1]) ? 1 : 0;
 
     }
 };
