@@ -102,7 +102,7 @@ const evaluatePacket = (packet) => {
         case 0:
             return subResults.reduce((sum, result) => sum + result);
         case 1:
-            return subResults.reduce((product, result) => product * result, 1);
+            return subResults.reduce((product, result) => product * result);
         case 2:
             return subResults.reduce((min, result) => Math.min(min, result), Infinity);
         case 3:
