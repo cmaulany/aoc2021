@@ -104,9 +104,9 @@ const evaluatePacket = (packet) => {
         case 1:
             return subResults.reduce((product, result) => product * result);
         case 2:
-            return subResults.reduce((min, result) => Math.min(min, result), Infinity);
+            return subResults.reduce((min, result) => Math.min(min, result));
         case 3:
-            return subResults.reduce((max, result) => Math.max(max, result), -Infinity);
+            return subResults.reduce((max, result) => Math.max(max, result));
         case 4:
             return packet.value;
         case 5:
