@@ -13,6 +13,7 @@ const target = { minX, maxX, minY, maxY };
 
 function willHitTarget(position, velocity, target) {
     const { minX, maxX, minY, maxY } = target;
+
     let { x, y } = position;
     let { x: xVelocity, y: yVelocity } = velocity;
     do {
@@ -21,6 +22,7 @@ function willHitTarget(position, velocity, target) {
 
         xVelocity -= Math.sign(xVelocity);
         yVelocity -= 1;
+
         if (
             x >= minX &&
             x <= maxX &&
@@ -30,15 +32,18 @@ function willHitTarget(position, velocity, target) {
             return true;
         }
     } while (x <= maxX && y >= minY)
+
     return false;
 };
 
+const startPosition = { x: 0, y: 0 };
+
 const hits = [];
-for (let x = -500; x < 500; x++) {
+for (let x = 0; x < 500; x++) {
     for (let y = -500; y < 500; y++) {
-        const result = willHitTarget({ x: 0, y: 0 }, { x, y }, target);
-        if (result) {
-            hits.push({ x, y })
+        const velocity = { x, y };
+        if (willHitTarget(startPosition, velocity, target)) {
+            hits.push(velocity)
         }
     }
 }
