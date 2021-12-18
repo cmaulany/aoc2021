@@ -3,37 +3,64 @@ const path_ = require('path');
 
 const input = fs.readFileSync(path_.resolve(__dirname, 'input.txt'), 'utf8');
 
-const getPath = (number, path) => path.reduce((pair, index) => pair?.[index], number);
-const setPath = (number, path, element) => {
+const numbers = input
+    .split('\n')
+    .map(line => JSON.parse(line.trim()));
+
+const get = (number, path) => path.reduce((pair, index) => pair?.[index], number);
+
+const set = (number, path, element) => {
     if (path.length === 0) {
         return element;
     }
     const [index, ...rest] = path;
-    return number.map((pair, i) => i === index ? setPath(pair, rest, element) : pair);
+    return number.map((pair, i) => i === index ? set(pair, rest, element) : pair);
 };
 
-const getRightMostPath = (number, path) => {
-    const element = getPath(number, path);
+const repeatPath = (number, index, path = []) => {
+    const element = get(number, path);
     if (element === undefined) {
         return undefined;
     }
 
     return typeof element === 'number' ?
-        path : getRightMostPath(number, [...path, 1]);
+        path : repeatPath(number, index, [...path, index]);
 }
 
-const getLeftMostPath = (number, path = []) => {
-    const element = getPath(number, path);
-    if (element === undefined) {
-        return undefined;
+const getRightMostPath = (number, path) => repeatPath(number, 1, path);
+
+const getLeftMostPath = (number, path) => repeatPath(number, 0, path);
+
+const findLeftNumberPath = (number, path) => {
+    const sharedPathLength = path.reduce(
+        (leftIndex, value, index) =>
+            value === 1 ?
+                index :
+                leftIndex,
+        -1
+    );
+    if (sharedPathLength >= 0) {
+        const leftPath = getRightMostPath(number, [...path.slice(0, sharedPathLength), 0]);
+        return leftPath;
     }
+};
 
-    return typeof element === 'number' ?
-        path : getLeftMostPath(number, [...path, 0]);
-}
+const findRightNumberPath = (number, path) => {
+    const sharedPathLength = path.reduce(
+        (leftIndex, value, index) =>
+            value === 0 ?
+                index :
+                leftIndex,
+        -1
+    );
+    if (sharedPathLength >= 0) {
+        const leftPath = getLeftMostPath(number, [...path.slice(0, sharedPathLength), 1]);
+        return leftPath;
+    }
+};
 
-const findNestedPair = (number, depth = 4, path = []) => {
-    const value = getPath(number, path);
+const findNestedPairPath = (number, depth = 4, path = []) => {
+    const value = get(number, path);
     if (value === undefined) {
         return undefined;
     }
@@ -43,13 +70,13 @@ const findNestedPair = (number, depth = 4, path = []) => {
     }
 
     return (
-        findNestedPair(number, depth, [...path, 0]) ??
-        findNestedPair(number, depth, [...path, 1])
+        findNestedPairPath(number, depth, [...path, 0]) ??
+        findNestedPairPath(number, depth, [...path, 1])
     );
 };
 
-const findNumberAbove = (number, n = 9, path = []) => {
-    const value = getPath(number, path);
+const findNumberAbovePath = (number, n = 9, path = []) => {
+    const value = get(number, path);
     if (value === undefined) {
         return undefined;
     }
@@ -59,56 +86,46 @@ const findNumberAbove = (number, n = 9, path = []) => {
     }
 
     return (
-        findNumberAbove(number, n, [...path, 0]) ??
-        findNumberAbove(number, n, [...path, 1])
+        findNumberAbovePath(number, n, [...path, 0]) ??
+        findNumberAbovePath(number, n, [...path, 1])
     );
 };
 
 const explode = (number, path) => {
-    const value = getPath(number, path);
+    const value = get(number, path);
     const [x, y] = value;
 
-    number = setPath(number, path, 0);
-    const leftIndex = path.reduce(
-        (leftIndex, value, index) =>
-            value === 1 ?
-                index :
-                leftIndex,
-        -1
-    );
-    if (leftIndex >= 0) {
-        const leftPath = getRightMostPath(number, [...path.slice(0, leftIndex), 0]);
-        const left = getPath(number, leftPath);
-        number = setPath(number, leftPath, left + x);
-    }
-    const rightIndex = path.reduce(
-        (leftIndex, value, index) =>
-            value === 0 ?
-                index :
-                leftIndex,
-        -1
-    );
-    if (rightIndex >= 0) {
-        const rightPath = getLeftMostPath(number, [...path.slice(0, rightIndex), 1]);
-        const right = getPath(number, rightPath);
+    number = set(number, path, 0);
 
-        number = setPath(number, rightPath, right + y);
+    const leftPath = findLeftNumberPath(number, path);
+    if (leftPath) {
+        const left = get(number, leftPath);
+        number = set(number, leftPath, left + x);
     }
-    
+
+    const rightPath = findRightNumberPath(number, path);
+    if (rightPath) {
+        const right = get(number, rightPath);
+        number = set(number, rightPath, right + y);
+    }
+
     return number;
 }
 
+const split = (number, path) => {
+    const value = get(number, path);
+    return set(number, path, [Math.floor(value / 2), Math.ceil(value / 2)]);
+}
+
 const snailReduce = (number) => {
-    const nestedPath = findNestedPair(number, 4);
-    if (nestedPath) {
-        return snailReduce(explode(number, nestedPath));
-    } else {
-        const pathAbove = findNumberAbove(number);
-        if (pathAbove) {
-            const value = getPath(number, pathAbove);
-            number = setPath(number, pathAbove, [Math.floor(value / 2), Math.ceil(value / 2)])
-            return snailReduce(number);
-        }
+    const explodePath = findNestedPairPath(number, 4);
+    if (explodePath) {
+        return snailReduce(explode(number, explodePath));
+    }
+
+    const splitPath = findNumberAbovePath(number);
+    if (splitPath) {
+        return snailReduce(split(number, splitPath));
     }
 
     return number;
@@ -128,9 +145,7 @@ const getMagnitude = (number) => {
 };
 
 const add = (a, b) => snailReduce([a, b]);
-const numbers = input
-    .split('\n')
-    .map(line => JSON.parse(line.trim()));
+
 const sum = numbers.reduce((sum, number) => add(sum, number));
 
 const bestPair = numbers.reduce(
@@ -151,10 +166,7 @@ const bestPair = numbers.reduce(
     { magnitude: -Infinity }
 );
 
-console.log(getMagnitude(sum));
-console.log(bestPair.magnitude);
-// const answer = add(a, b);
-// const answer = snailReduce([[3, [2, [8, 0]]], [9, [5, [4, [3, 2]]]]]);
-// console.log(JSON.stringify(answer));
-
-// console.log(getRightMostPath)
+const answerPart1 = getMagnitude(sum)
+const answerPart2 = bestPair.magnitude;
+console.log(`Answer Part 1: ${answerPart1}`);
+console.log(`Answer Part 2: ${answerPart2}`);
