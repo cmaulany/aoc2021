@@ -3,9 +3,7 @@ const path_ = require('path');
 
 const input = fs.readFileSync(path_.resolve(__dirname, 'input.txt'), 'utf8');
 
-const numbers = input
-    .split('\n')
-    .map(line => JSON.parse(line.trim()));
+const numbers = input.split('\n').map(line => JSON.parse(line.trim()));
 
 const get = (number, path) => path.reduce((pair, index) => pair?.[index], number);
 
@@ -14,7 +12,11 @@ const set = (number, path, element) => {
         return element;
     }
     const [index, ...rest] = path;
-    return number.map((pair, i) => i === index ? set(pair, rest, element) : pair);
+    return number.map((pair, i) =>
+        i === index ?
+            set(pair, rest, element) :
+            pair
+    );
 };
 
 const repeatPath = (number, index, path = []) => {
@@ -31,31 +33,25 @@ const getRightMostPath = (number, path) => repeatPath(number, 1, path);
 
 const getLeftMostPath = (number, path) => repeatPath(number, 0, path);
 
+const findLastOccurence = (list, value) => list.reduce(
+    (lastOccurence, v, index) =>
+        v === value ?
+            index :
+            lastOccurence,
+    -1
+);
+
 const findLeftNumberPath = (number, path) => {
-    const sharedPathLength = path.reduce(
-        (leftIndex, value, index) =>
-            value === 1 ?
-                index :
-                leftIndex,
-        -1
-    );
+    const sharedPathLength = findLastOccurence(path, 1);
     if (sharedPathLength >= 0) {
-        const leftPath = getRightMostPath(number, [...path.slice(0, sharedPathLength), 0]);
-        return leftPath;
+        return getRightMostPath(number, [...path.slice(0, sharedPathLength), 0]);
     }
 };
 
 const findRightNumberPath = (number, path) => {
-    const sharedPathLength = path.reduce(
-        (leftIndex, value, index) =>
-            value === 0 ?
-                index :
-                leftIndex,
-        -1
-    );
+    const sharedPathLength = findLastOccurence(path, 0);
     if (sharedPathLength >= 0) {
-        const leftPath = getLeftMostPath(number, [...path.slice(0, sharedPathLength), 1]);
-        return leftPath;
+        return getLeftMostPath(number, [...path.slice(0, sharedPathLength), 1]);
     }
 };
 
