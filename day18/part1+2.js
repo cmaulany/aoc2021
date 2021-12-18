@@ -33,23 +33,15 @@ const getRightMostPath = (number, path) => repeatPath(number, 1, path);
 
 const getLeftMostPath = (number, path) => repeatPath(number, 0, path);
 
-const findLastOccurence = (list, value) => list.reduce(
-    (lastOccurence, v, index) =>
-        v === value ?
-            index :
-            lastOccurence,
-    -1
-);
-
 const findLeftNumberPath = (number, path) => {
-    const sharedPathLength = findLastOccurence(path, 1);
+    const sharedPathLength = path.lastIndexOf(1);
     if (sharedPathLength >= 0) {
         return getRightMostPath(number, [...path.slice(0, sharedPathLength), 0]);
     }
 };
 
 const findRightNumberPath = (number, path) => {
-    const sharedPathLength = findLastOccurence(path, 0);
+    const sharedPathLength = path.lastIndexOf(0);
     if (sharedPathLength >= 0) {
         return getLeftMostPath(number, [...path.slice(0, sharedPathLength), 1]);
     }
