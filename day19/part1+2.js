@@ -10,7 +10,8 @@ const scanners = input.split('\n\n').map(
         .slice(1)
         .map(
             beaconInput => beaconInput.trim().split(',').map(Number)
-        ));
+        )
+);
 
 const memoize = (callback) => {
     const memo = {};
@@ -22,7 +23,7 @@ const memoize = (callback) => {
     };
 };
 
-const subtract = (a, b) => a.map((coordinate, index) => coordinate - b[index]);
+const subtract = (a, b) => a.map((_, index) => a[index] - b[index]);
 const equals = (a, b) => a.every((_, index) => a[index] === b[index]);
 const turn = (matrix) => matrix.map(([x, y, z]) => [-y, x, z]);
 const roll = (matrix) => matrix.map(([x, y, z]) => [x, z, -y]);
@@ -139,10 +140,14 @@ const overlayed = aligned.reduce(overlay);
 const answerPart1 = overlayed.length;
 const answerPart2 = deltas.reduce(
     (max, a) => deltas.reduce(
-        (max, b) => Math.max(max, a[0] - b[0] + a[1] - b[1] + a[2] - b[2]),
+        (max, b) => Math.max(
+            max,
+            a[0] + a[1] + a[2] - b[0] - b[1] - b[2]
+        ),
         max
     ),
     -Infinity
 );
+
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: ${answerPart2}`);

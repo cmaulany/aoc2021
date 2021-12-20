@@ -27,7 +27,7 @@ const repeatPath = (number, index, path = []) => {
 
     return typeof element === 'number' ?
         path : repeatPath(number, index, [...path, index]);
-}
+};
 
 const getRightMostPath = (number, path) => repeatPath(number, 1, path);
 
@@ -98,12 +98,12 @@ const explode = (number, path) => {
     }
 
     return number;
-}
+};
 
 const split = (number, path) => {
     const value = get(number, path);
     return set(number, path, [Math.floor(value / 2), Math.ceil(value / 2)]);
-}
+};
 
 const snailReduce = (number) => {
     const explodePath = findNestedPairPath(number, 4);
@@ -154,7 +154,7 @@ const bestPair = numbers.reduce(
     { magnitude: -Infinity }
 );
 
-const answerPart1 = getMagnitude(sum)
+const answerPart1 = getMagnitude(sum);
 const answerPart2 = bestPair.magnitude;
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: ${answerPart2}`);
