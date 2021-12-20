@@ -69,7 +69,7 @@ const enhance = (algorithm, image, bounds = getBounds(image)) => {
         maxY
     } = bounds;
 
-    const changes = [];
+    const newImage = [];
     for (let y = minY - 1; y <= maxY + 1; y++) {
         for (let x = minX - 1; x <= maxX + 1; x++) {
             const bits = [];
@@ -79,23 +79,11 @@ const enhance = (algorithm, image, bounds = getBounds(image)) => {
                 }
             }
             const index = parseInt(bits.join(''), 2);
-            const value = algorithm[index] === "#";
-            changes.push({ x, y, value });
+            if (algorithm[index] === "#") {
+                newImage[`${x},${y}`] = true;
+            }
         }
     }
-
-    const newImage = changes.reduce(
-        (image, change) => {
-            const key = `${change.x},${change.y}`;
-            if (change.value) {
-                image[key] = true;
-            } else {
-                delete image[key];
-            }
-            return image;
-        },
-        {}
-    );
 
     return newImage;
 };
