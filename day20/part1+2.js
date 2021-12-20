@@ -106,7 +106,7 @@ const repeatEnhance = (algorithm, image, times) => {
 const second = repeatEnhance(algorithm, image, 2);
 const fiftieth = repeatEnhance(algorithm, image, 50);
 
-const answerPart1 = Object.keys(twice).length;
+const answerPart1 = Object.keys(second).length;
 const answerPart2 = Object.keys(fiftieth).length;
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: ${answerPart2}`);
