@@ -23,7 +23,6 @@ const memoize = (callback) => {
     };
 };
 
-
 const sum = (...args) => args
     .map(Object.entries)
     .flat()
@@ -40,7 +39,7 @@ const getWins = memoize(function (
     settings = {
         boardSize: 10,
         maxScore: 21,
-        diceSides: 3
+        diceOutcomes: [1, 2, 3]
     },
     rolls = []
 ) {
@@ -75,9 +74,8 @@ const getWins = memoize(function (
     }
 
     return sum(
-        ...Array.from(
-            { length: settings.diceSides },
-            (_, i) => getWins(players, currentPlayer, settings, [...rolls, i + 1])
+        ...settings.diceOutcomes.map(
+            roll => getWins(players, currentPlayer, settings, [...rolls, roll])
         )
     );
 });
