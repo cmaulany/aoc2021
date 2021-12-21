@@ -69,7 +69,7 @@ const enhance = (algorithm, image, bounds = getBounds(image)) => {
         maxY
     } = bounds;
 
-    const newImage = [];
+    const newImage = {};
     for (let y = minY - 1; y <= maxY + 1; y++) {
         for (let x = minX - 1; x <= maxX + 1; x++) {
             const bits = [];
@@ -91,21 +91,22 @@ const enhance = (algorithm, image, bounds = getBounds(image)) => {
 const repeatEnhance = (algorithm, image, times) => {
     const bounds = getBounds(image);
     for (let i = 0; i < times; i++) {
+        const offset = times * 2 - i;
         const adjustedBounds = {
-            minX: bounds.minX - (times * 2 - i),
-            maxX: bounds.maxX + (times * 2 - i),
-            minY: bounds.minY - (times * 2 - i),
-            maxY: bounds.maxY + (times * 2 - i)
+            minX: bounds.minX - offset,
+            maxX: bounds.maxX + offset,
+            minY: bounds.minY - offset,
+            maxY: bounds.maxY + offset
         };
         image = enhance(algorithm, image, adjustedBounds);
     }
     return image;
 };
 
-const twice = repeatEnhance(algorithm, image, 2);
-const fifty = repeatEnhance(algorithm, image, 50);
+const second = repeatEnhance(algorithm, image, 2);
+const fiftieth = repeatEnhance(algorithm, image, 50);
 
-const answerPart1 = Object.keys(twice).length;
-const answerPart2 = Object.keys(fifty).length;
+const answerPart1 = Object.keys(second).length;
+const answerPart2 = Object.keys(fiftieth).length;
 console.log(`Answer Part 1: ${answerPart1}`);
 console.log(`Answer Part 2: ${answerPart2}`);

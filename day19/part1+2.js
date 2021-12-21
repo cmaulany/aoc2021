@@ -120,7 +120,7 @@ const alignTo = memoize((to, scanner) => {
 
 const aligned = scanners.slice(0, 1);
 const toAlign = scanners.slice(1);
-const deltas = [[0, 0, 0]];
+const positions = [[0, 0, 0]];
 for (let i = 0; i < toAlign.length; i++) {
     const scanner = toAlign[i];
     const match = aligned.reduce(
@@ -130,7 +130,7 @@ for (let i = 0; i < toAlign.length; i++) {
     if (match) {
         toAlign.splice(i, 1);
         aligned.push(match.map);
-        deltas.push(match.delta);
+        positions.push(match.delta);
         i = -1;
     }
 }
@@ -138,8 +138,8 @@ for (let i = 0; i < toAlign.length; i++) {
 const overlayed = aligned.reduce(overlay);
 
 const answerPart1 = overlayed.length;
-const answerPart2 = deltas.reduce(
-    (max, a) => deltas.reduce(
+const answerPart2 = positions.reduce(
+    (max, a) => positions.reduce(
         (max, b) => Math.max(
             max,
             a[0] + a[1] + a[2] - b[0] - b[1] - b[2]
