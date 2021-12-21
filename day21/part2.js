@@ -39,7 +39,8 @@ const getWins = memoize(function (
     currentPlayer = 0,
     settings = {
         boardSize: 10,
-        maxScore: 21
+        maxScore: 21,
+        diceSides: 3
     },
     rolls = []
 ) {
@@ -74,9 +75,10 @@ const getWins = memoize(function (
     }
 
     return sum(
-        getWins(players, currentPlayer, settings, [...rolls, 1]),
-        getWins(players, currentPlayer, settings, [...rolls, 2]),
-        getWins(players, currentPlayer, settings, [...rolls, 3]),
+        ...Array.from(
+            { length: settings.diceSides },
+            (_, i) => getWins(players, currentPlayer, settings, [...rolls, i + 1])
+        )
     );
 });
 
