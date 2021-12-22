@@ -156,7 +156,7 @@ const doStep = (regions, step) => {
         z: step.z
     };
 
-    return regions = step.action === 'on' ?
+    return step.action === 'on' ?
         addRegion(regions, region) :
         removeRegion(regions, region);
 };
