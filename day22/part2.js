@@ -64,38 +64,35 @@ const removeRegion = (regions, region) => regions.reduce(
     []
 );
 
-const subtract = (a, b, axes = Object.keys(b)) => axes.reduce(
-    (regions, axis) => regions.reduce(
-        (regions, other) => {
-            const {
-                before,
-                after: overlapAndAfter
-            } = slice(other, axis, b[axis].min - 0.5);
+const subtract = (a, b, axes = Object.keys(b)) => {
+    const regions = [];
+    const axis = axes[0];
 
-            const {
-                before: overlap,
-                after
-            } = slice(overlapAndAfter, axis, b[axis].max + 0.5);
+    const {
+        before,
+        after: overlapAndAfter
+    } = slice(a, axis, b[axis].min - 0.5);
 
-            if (before) {
-                regions.push(before);
-            }
+    const {
+        before: overlap,
+        after
+    } = slice(overlapAndAfter, axis, b[axis].max + 0.5);
 
-            if (after) {
-                regions.push(after);
-            }
+    if (before) {
+        regions.push(before);
+    }
 
-            if (overlap && axes.length > 1) {
-                const remainingAxes = axes.filter(other => other !== axis);
-                regions.push(...subtract(overlap, b, remainingAxes));
-            }
+    if (after) {
+        regions.push(after);
+    }
 
-            return merge(regions);
-        },
-        []
-    ),
-    [a]
-);
+    if (overlap && axes.length > 1) {
+        const remainingAxes = axes.filter(other => other !== axis);
+        regions.push(...subtract(overlap, b, remainingAxes));
+    }
+
+    return merge(regions);
+};
 
 const mergePair = (a, b) => {
     const axes = Object.keys(a);
