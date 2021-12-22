@@ -7,7 +7,6 @@ const steps = input
     .split('\n')
     .map(line => {
         const [action, ...rangesInput] = line.split(/\ |,/);
-
         return rangesInput.reduce(
             (step, rangeInput) => {
                 const [axis, min, max] = rangeInput.match(/(\w)=(-?\d+)..(-?\d+)/).slice(1);
