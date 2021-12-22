@@ -20,15 +20,15 @@ const steps = input
 
 const slice = (region, axis, offset) => {
     if (!region) {
-        return {};
+        return [undefined, undefined];
     }
 
     if (region[axis].min > offset) {
-        return { after: region };
+        return [undefined, region];
     }
 
     if (region[axis].max < offset) {
-        return { before: region };
+        return [region, undefined];
     }
 
     const before = {
@@ -47,7 +47,7 @@ const slice = (region, axis, offset) => {
         },
     };
 
-    return { before, after };
+    return [before, after];
 };
 
 const addRegion = (regions, region) => [...removeRegion(regions, region), region];
@@ -62,17 +62,10 @@ const removeRegion = (regions, region) => regions.reduce(
 
 const subtract = (a, b, axes = Object.keys(b)) => {
     const axis = axes[0];
-    
-    const {
-        before,
-        after: overlapAndAfter
-    } = slice(a, axis, b[axis].min - 0.5);
-    
-    const {
-        before: overlap,
-        after
-    } = slice(overlapAndAfter, axis, b[axis].max + 0.5);
-    
+
+    const [before, overlapAndAfter] = slice(a, axis, b[axis].min - 0.5);
+    const [overlap, after] = slice(overlapAndAfter, axis, b[axis].max + 0.5);
+
     const regions = [];
     if (before) {
         regions.push(before);
