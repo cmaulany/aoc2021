@@ -87,14 +87,14 @@ const subtract = (a, b, axes = Object.keys(b)) => {
 
 const mergePair = (a, b) => {
     const axes = Object.keys(a);
-    const unequalDimensions = axes.filter(axis =>
+    const unequalAxes = axes.filter(axis =>
         a[axis].min !== b[axis].min ||
         a[axis].max !== b[axis].max
     );
 
-    const axis = unequalDimensions[0];
+    const axis = unequalAxes[0];
     if (
-        unequalDimensions.length !== 1 ||
+        unequalAxes.length !== 1 ||
         [
             b[axis].min,
             b[axis].max
