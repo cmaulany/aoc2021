@@ -16,17 +16,6 @@ const steps = input
         });
 
         return { action, x, y, z };
-    })
-    .filter(({ x, y, z }) => {
-        const size = 50;
-        return (
-            x.max >= -size &&
-            x.min <= size &&
-            y.max >= -size &&
-            y.min <= size &&
-            z.max >= -size &&
-            z.min <= size
-        );
     });
 
 const forRegion = (cubes, region, callback) => {
@@ -39,10 +28,9 @@ const forRegion = (cubes, region, callback) => {
             }
         }
     }
-}
+};
 
 const doStep = (cubes, step) => {
-    cubes = { ...cubes };
     forRegion(cubes, step, (_, key) => {
         if (step.action === 'on') {
             cubes[key] = true;
@@ -63,14 +51,25 @@ const countRegion = (cubes, region) => {
     return sum;
 };
 
-const cubes = steps.reduce(doStep, {});
+const regionSize = 50;
+const region = {
+    x: { min: -regionSize, max: regionSize },
+    y: { min: -regionSize, max: regionSize },
+    z: { min: -regionSize, max: regionSize },
+};
 
-console.log(countRegion(
-    cubes,
-    {
-        x: { min: -50, max: 50 },
-        y: { min: -50, max: 50 },
-        z: { min: -50, max: 50 },
-    }
-));
+const relevantSteps = steps.filter(({ x, y, z }) => {
+    return (
+        x.max >= region.x.min &&
+        x.min <= region.x.max &&
+        y.max >= region.y.min &&
+        y.min <= region.y.max &&
+        z.max >= region.z.min &&
+        z.min <= region.z.max
+    );
+});
 
+const cubes = relevantSteps.reduce(doStep, {});
+
+const answer = countRegion(cubes, region);
+console.log(`Answer: ${answer}`);
