@@ -69,13 +69,13 @@ const subtract = (a, b, axes = Object.keys(b)) => axes.reduce(
         (regions, other) => {
             const {
                 before,
-                after: middleAndAfter
+                after: overlapAndAfter
             } = slice(other, axis, b[axis].min - 0.5);
 
             const {
-                before: middle,
+                before: overlap,
                 after
-            } = slice(middleAndAfter, axis, b[axis].max + 0.5);
+            } = slice(overlapAndAfter, axis, b[axis].max + 0.5);
 
             if (before) {
                 regions.push(before);
@@ -85,9 +85,9 @@ const subtract = (a, b, axes = Object.keys(b)) => axes.reduce(
                 regions.push(after);
             }
 
-            if (middle && axes.length > 1) {
+            if (overlap && axes.length > 1) {
                 const remainingAxes = axes.filter(other => other !== axis);
-                regions.push(...subtract(middle, b, remainingAxes));
+                regions.push(...subtract(overlap, b, remainingAxes));
             }
 
             return merge(regions);
