@@ -145,10 +145,9 @@ const merge = (regions) => {
     return regions;
 }
 
-const toVolume = (region) => Object.values(region).reduce(
-    (volume, { max, min }) => volume * (max - min + 1),
-    1
-);
+const toVolume = (region) => Object.values(region)
+    .map(({ min, max }) => max - min + 1)
+    .reduce((volume, length) => volume * length);
 
 const doStep = (regions, step) => {
     const region = {
@@ -163,5 +162,5 @@ const doStep = (regions, step) => {
 };
 
 const regions = steps.reduce(doStep, [])
-const answer = regions.reduce((sum, region) => sum + toVolume(region), 0);
+const answer = regions.map(toVolume).reduce((sum, volume) => sum + volume);
 console.log(`Answer: ${answer}`);
