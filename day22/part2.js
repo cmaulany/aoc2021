@@ -61,19 +61,19 @@ const removeRegion = (regions, region) => regions.reduce(
 );
 
 const subtract = (a, b, axes = Object.keys(b)) => {
-    const regions = [];
     const axis = axes[0];
-
+    
     const {
         before,
         after: overlapAndAfter
     } = slice(a, axis, b[axis].min - 0.5);
-
+    
     const {
         before: overlap,
         after
     } = slice(overlapAndAfter, axis, b[axis].max + 0.5);
-
+    
+    const regions = [];
     if (before) {
         regions.push(before);
     }
