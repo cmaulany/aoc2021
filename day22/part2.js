@@ -7,15 +7,18 @@ const steps = input
     .split('\n')
     .map(line => {
         const [action, ...rangesInput] = line.split(/\ |,/);
-        const [x, y, z] = rangesInput.map(range => {
-            [dimension, min, max] = range.match(/(\w)=(-?\d+)..(-?\d+)/).slice(1);
-            return {
-                min: Number(min),
-                max: Number(max)
-            };
-        });
 
-        return { action, x, y, z };
+        return rangesInput.reduce(
+            (step, rangeInput) => {
+                const [axis, min, max] = rangeInput.match(/(\w)=(-?\d+)..(-?\d+)/).slice(1);
+                step[axis] = {
+                    min: Number(min),
+                    max: Number(max)
+                };
+                return step;
+            },
+            { action }
+        );
     });
 
 const slice = (region, axis, offset) => {
