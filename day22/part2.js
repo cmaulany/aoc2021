@@ -18,18 +18,18 @@ const steps = input
         return { action, x, y, z };
     });
 
-const slice = (region, axis, distance) => {
+const slice = (region, axis, offset) => {
     if (!region) {
         return {};
     }
 
-    if (region[axis].min > distance) {
+    if (region[axis].min > offset) {
         return {
             after: region
         };
     }
 
-    if (region[axis].max < distance) {
+    if (region[axis].max < offset) {
         return {
             before: region
         };
@@ -39,14 +39,14 @@ const slice = (region, axis, distance) => {
         ...region,
         [axis]: {
             min: region[axis].min,
-            max: Math.floor(distance)
+            max: Math.floor(offset)
         },
     };
 
     const after = {
         ...region,
         [axis]: {
-            min: Math.ceil(distance),
+            min: Math.ceil(offset),
             max: region[axis].max
         },
     };
