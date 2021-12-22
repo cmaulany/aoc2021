@@ -24,15 +24,11 @@ const slice = (region, axis, offset) => {
     }
 
     if (region[axis].min > offset) {
-        return {
-            after: region
-        };
+        return { after: region };
     }
 
     if (region[axis].max < offset) {
-        return {
-            before: region
-        };
+        return { before: region };
     }
 
     const before = {
@@ -144,12 +140,13 @@ const merge = (regions) => {
                     break;
                 }
             }
+
             if (!isMerged) {
                 newRegions.push(region);
             }
         }
-        regions = newRegions;
 
+        regions = newRegions;
     } while (previousLength > regions.length)
 
     return regions;
@@ -166,13 +163,10 @@ const doStep = (regions, step) => {
         y: step.y,
         z: step.z
     };
-    if (step.action === 'on') {
-        regions = addRegion(regions, region);
-    } else {
-        regions = removeRegion(regions, region);
-    }
 
-    return regions;
+    return regions = step.action === 'on' ?
+        addRegion(regions, region) :
+        removeRegion(regions, region);
 };
 
 const regions = steps.reduce(doStep, [])
