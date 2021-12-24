@@ -52,13 +52,13 @@ const memoize = (callback) => {
 const map = [
     { type: 'hallway', amphipods: [] },
     { type: 'hallway', amphipods: [] },
-    { type: 'A', amphipods: ["C", "C"] },
+    { type: 'A', amphipods: ["C", "D", "D", "C"] },
     { type: 'hallway', amphipods: [] },
-    { type: 'B', amphipods: ["A", "A"] },
+    { type: 'B', amphipods: ["A", "B", "C", "A"] },
     { type: 'hallway', amphipods: [] },
-    { type: 'C', amphipods: ["D", "B"] },
+    { type: 'C', amphipods: ["D", "A", "B", "B"] },
     { type: 'hallway', amphipods: [] },
-    { type: 'D', amphipods: ["B", "D"] },
+    { type: 'D', amphipods: ["B", "C", "A", "D"] },
     { type: 'hallway', amphipods: [] },
     { type: 'hallway', amphipods: [] }
 ];
@@ -137,7 +137,7 @@ const getMoves = (map) => {
 const isFinished = (map) => map.every((node) =>
     node.type === 'hallway' ||
     (
-        node.amphipods.length >= 2 &&
+        node.amphipods.length >= 4 &&
         node.amphipods.every(amphipod => amphipod === node.type)
     )
 );
@@ -153,10 +153,10 @@ const getMoveCost = (map, [from, to]) => {
 
     let distance = Math.abs(to - from);
     if (map[from].type !== 'hallway') {
-        distance += 3 - map[from].amphipods.length;
+        distance += 5 - map[from].amphipods.length;
     }
     if (map[to].type !== 'hallway') {
-        distance += 2 - map[to].amphipods.length;
+        distance += 4 - map[to].amphipods.length;
     }
     const amphipod = map[from].amphipods.slice(-1)[0];
     return energyCost[amphipod] * distance;
