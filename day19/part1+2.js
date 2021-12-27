@@ -29,30 +29,13 @@ const turn = (matrix) => matrix.map(([x, y, z]) => [-y, x, z]);
 const roll = (matrix) => matrix.map(([x, y, z]) => [x, z, -y]);
 
 const rotationSequence = [
-    roll,
-    turn,
-    turn,
-    turn,
-    roll,
-    turn,
-    turn,
-    turn,
-    roll,
-    turn,
-    turn,
-    turn,
+    roll, turn, turn, turn,
+    roll, turn, turn, turn,
+    roll, turn, turn, turn,
     (matrix) => roll(turn(roll(matrix))),
-    roll,
-    turn,
-    turn,
-    turn,
-    roll,
-    turn,
-    turn,
-    turn,
-    roll,
-    turn,
-    turn,
+    roll, turn, turn, turn,
+    roll, turn, turn, turn,
+    roll, turn, turn,
 ];
 
 const overlay = (a, b) => [
