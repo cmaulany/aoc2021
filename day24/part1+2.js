@@ -30,7 +30,6 @@ const createAlu = (instructions) => {
             switch (op) {
                 case 'inp':
                     memory[a] = inputs[i++];
-                    // console.log("z", i, memory);
                     break;
                 case 'add':
                     memory[a] += bValue;
