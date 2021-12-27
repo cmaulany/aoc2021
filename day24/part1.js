@@ -13,9 +13,9 @@ const instructions = input.split('\n').map(line => {
 
 const partialInstructions = [];
 let start = 0;
-for (let end = 1; end < instructions.length; end++) {
+for (let end = 1; end <= instructions.length; end++) {
     const instruction = instructions[end];
-    if (instruction[0] === 'inp' || end === instructions.length) {
+    if (instruction?.[0] === 'inp' || end === instructions.length) {
         partialInstructions.push(instructions.slice(start, end));
         start = end;
     }
@@ -69,170 +69,29 @@ const createAlu = (instructions) => {
 }
 
 const alus = partialInstructions.map(createAlu);
+// some zero..
+// const answer = [9, 26, 9, 24, 9, 16, 9, 2, 6, 9, 6, 2, 9, 9];
 
-let i = 0;
-const solve = (alus, sequence = [], memory = {}) => {
-    if (i++ % 1000000 === 0) {
-        console.log(sequence.join(''));
-    }
-
-    if (alus.length === 0) {
-        return memory.z === 0 ?
-            sequence : null;
-    }
-
-    const alu = alus[0];
-
-    for (let n = 9; n > 0; n--) {
+for (let a = -30; a <= 60; a++) {
+    const answer = [
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        2,
+        a
+    ];
+    const memory = alus.slice(0, answer.length).reduce((memory, alu, i) => {
         alu.setMemory(memory);
-        const result = alu.run(n);
-        const seq = solve(alus.slice(1), [...sequence, n], result);
+        return alu.run(answer[i])
+    }, { z: 0 });
+    console.log(a, memory.z);
+}
+// const alu = createAlu(instructions);
+// const answer = alu.run(...zero);
+// console.log(answer);
 
-        if (seq) {
-            return seq;
-        }
-    }
-};
-
-const sequence = solve(alus);
-console.log(sequence.join(''));
-
-
-// // last number is irrelevant
-// let prevMin = 0;
-// let prevMax = 0;
-// for (let a = 0; a < alus.length; a++) {
-//     const min = prevMin;
-//     const max = prevMax;
-
-//     prevMin = Infinity;
-//     prevMax = -Infinity;
-//     console.log({ prevMin, prevMax });
-
-//     let hasMatch = false;
-//     const alu = alus[a];
-//     for (let n = 9; n > 0; n--) {
-//         for (let z = 0; z < 100000; z++) {
-//             alu.reset({ z });
-//             const result = alu.run(n);
-//             if (result.z >= min && result.z <= max) {
-//                 hasMatch = true;
-//                 console.log(`Alu ${a}`, n, z);
-//                 prevMin = Math.min(prevMin, z);
-//                 prevMax = Math.max(prevMax, z);
-//             }
-//         }
-//     }
-//     if (!hasMatch) {
-//         console.log("Could not find match for " + a);
-//         break;
-//     }
-// }
-
-
-// console.log("Test");
-
-// const getPreviousZs = (alu, z, range = { min: 0, max: 100000 }) => {
-//     for (let n = 9; n > 0; n--) {
-//         for (let z = 0; z < 100000; z++) {
-//             alu.reset({ z });
-//             const result = alu.run(n);
-//             if (result.z >= min && result.z <= max) {
-//                 hasMatch = true;
-//                 console.log(`Alu ${a}`, n, z);
-//                 prevMin = Math.min(prevMin, z);
-//                 prevMax = Math.max(prevMax, z);
-//             }
-//         }
-//     }
-// }
-
-
-// // 2nd to last number is irrelevant
-// alu = alus[1];
-// for (let n = 9; n > 0; n--) {
-//     for (let z = 0; z < 100000; z++) {
-//         alu.reset({ z });
-//         const result = alu.run(n);
-//         if (result.z === 15) {
-//             console.log(n, z);
-//         }
-//     }
-// }
-
-// // irrelevant, should be 10737
-// alu = alus[2];
-// for (let n = 9; n > 0; n--) {
-//     for (let z = 0; z < 100000; z++) {
-//         alu.reset({ z });
-//         const result = alu.run(n);
-//         if (result.z === 412) {
-//             console.log(n, z);
-//         }
-//     }
-// }
-
-// alu = alus[3];
-// for (let n = 9; n > 0; n--) {
-//     for (let z = 0; z < 100000; z++) {
-//         alu.reset({ z });
-//         const result = alu.run(n);
-//         if (result.z >= 10729 && result.z <= 10737) {
-//             console.log(n, z);
-//         }
-//     }
-// }
-
-// alu = alus[4];
-// for (let n = 9; n > 0; n--) {
-//     for (let z = 0; z < 100000; z++) {
-//         alu.reset({ z });
-//         const result = alu.run(n);
-//         if (result.z >= 412 && result.z <= 412) {
-//             console.log(n, z);
-//         }
-//     }
-// }
-
-// alu = alus[5];
-// for (let n = 9; n > 0; n--) {
-//     for (let z = 0; z < 100000; z++) {
-//         alu.reset({ z });
-//         const result = alu.run(n);
-//         if (result.z >= 10721 && result.z <= 10729) {
-//             console.log(5, n, z);
-//         }
-//     }
-// }
-// console.log("none");
-
-// let lastStates = [{ z: 0 }];
-// for (let i = 0; i < alus.length; i++) {
-//     for (let j = 0; j < lastStates.length; j++) {
-//         const states = findSourceStates(alus[i], lastStates[j].z);
-//         if (states.length > 0) {
-//             lastStates = states;
-//             console.log("===", lastStates[j].n);
-//             break;
-//         }
-//     }
-//     console.log("Couldn't find for ", i);
-// }
-
-
-// for (let n = 99999999999999; n >= 11111111111111; n--) {
-//     // if (n % 100000 === 0) {
-//     //     console.log("C:", n);
-//     // }
-//     if (n.toString().includes('0')) {
-//         continue;
-//     }
-//     const args = n.toString().split('').map(Number);
-
-//     // console.log(args);
-//     // console.log(result);
-//     const result = createAlu(instructions).run(...args);
-//     if (result.z === 0) {
-//         console.log(args.join(''));
-//     }
-// }
+// console.log(partialInstructions.length);
