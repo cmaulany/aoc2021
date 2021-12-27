@@ -58,6 +58,15 @@ const createAlu = (instructions) => {
     };
 };
 
+const validateSerial = (serial) => {
+    const asArray = serial.split('').map(Number);
+    return (
+        asArray.length === 14 &&
+        asArray.every(n => n >= 1 && n <= 9) &&
+        createAlu(instructions).run(...asArray).z === 0
+    );
+};
+
 const generateSerial = (n0, n1, n2, n3, n4, n6, n9) => {
     const n5 = n4 + 8 - 1;
     const n7 = n6 + 9 - 16;
@@ -67,19 +76,14 @@ const generateSerial = (n0, n1, n2, n3, n4, n6, n9) => {
     const n12 = n1 + 11 - 6;
     const n13 = n0 + 6 - 6;
 
-    return [
+    const serial = [
         n0, n1, n2, n3, n4, n5, n6,
         n7, n8, n9, n10, n11, n12, n13
     ].join('');
-}
 
-const isValidSerial = (serial) => {
-    const asArray = serial.split('').map(Number);
-    return (
-        asArray.every(n => n >= 1 && n <= 9) &&
-        createAlu(instructions).run(...asArray).z === 0
-    );
-}
+    return validateSerial(serial) ? serial : undefined;
+};
+
 
 for (let n = 9999999; n >= 1111111; n--) {
     const asString = n.toString();
@@ -89,7 +93,7 @@ for (let n = 9999999; n >= 1111111; n--) {
     const asArray = asString.split('').map(Number);
     const serial = generateSerial(...asArray);
 
-    if (isValidSerial(serial)) {
+    if (serial) {
         console.log(`Answer Part 1: ${serial}`);
         break;
     }
@@ -103,7 +107,7 @@ for (let n = 1111111; n <= 9999999; n++) {
     const asArray = asString.split('').map(Number);
     const serial = generateSerial(...asArray);
 
-    if (isValidSerial(serial)) {
+    if (serial) {
         console.log(`Answer Part 2: ${serial}`);
         break;
     }
